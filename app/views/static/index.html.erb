@@ -1,0 +1,25 @@
+<div class="hero-unit" xmlns="http://www.w3.org/1999/html">
+  <h1>Say Hello to the World.</h1>
+  <br>
+  <p>
+    Supertravel lets you search for events in the cities you're traveling to, and organize them according to your plans.
+    <br><br>
+    Just tell us where you're going, and we'll do the rest!
+    <br><br><br>
+  </p>
+  <p>
+  <form action="/search/results" method="get" autocomplete="off" class="form-inline center">
+    <input id="q" name="q" type="text" placeholder="Where you're going">
+    <font color=#fff>from
+    <button id="sdate" name="sdate" class="btn datepicker">
+      <i class="icon-calendar"></i>
+    </button>
+    to</font>
+    <button id="edate" name="edate" class="btn datepicker">
+      <i class="icon-calendar"></i>
+    </button>
+    <button type="submit" class="btn">Search</button>
+  </form>
+  </p>
+</div>
+<%= render 'backstretch' %>

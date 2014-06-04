@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= Eventful::get_event(@event.api_id)['description'].html_safe %>
+</p>
+
+<h2>opinions</h2>
+<% @event.opinions.each do |opinion| %>
+    <p>
+      <b>opinion:</b>
+      <%= opinion.text %>
+    </p>
+    <% if opinion.commenter == current_user.id %>
+    <%= link_to 'Destroy', '/opinions/destroy?event_id=' + @event.id.to_s + '&opinion_id=' + opinion.id.to_s %>
+    <% end %>
+<% end %>
+
+<h2>Add a opinion:</h2>
+<%= form_for([@event, @event.opinions.build]) do |f| %>
+    <div class="field">
+      <%= f.label :text %>
+      <br/>
+      <%= f.text_area :text %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+<% end %>
+
+<br/>
+
+<%= link_to 'Edit event', edit_event_path(@event) %>
+<%= link_to 'Back to events', events_path %>

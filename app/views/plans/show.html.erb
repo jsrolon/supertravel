@@ -1,0 +1,99 @@
+<% require 'wunderground' %>
+
+<p id="notice"><%= notice %></p>
+
+<div id="timeline-embed"></div><br><br>
+
+<div class="well">
+  <table>
+    <p>
+      <b>User:</b>
+      <%= @plan.user.email %>
+    </p>
+
+    <p>
+      <b>Description:</b>
+      <%= @plan.description %>
+    </p>
+
+    <p>
+      <b>Name:</b>
+      <%= @plan.name %>
+    </p>
+
+    <p>
+      <b>Starts on:</b>
+      <%= @plan.starts_on %>
+    </p>
+
+    <p>
+      <b>Ends on:</b>
+      <%= @plan.ends_on %>
+    </p>
+
+    <p>
+      <b>Weather:</b>
+      <% if @forecast["response"]["results"].nil? %>
+          <% city=@forecast['forecast']['txt_forecast']['forecastday'][0] %>
+          <%= image_tag(city['icon_url']) %>
+          <%= city['fcttext'] %>
+      <% else %>
+          <% w = Wunderground.new('bef26a2b0f485846') %>
+          <% city=w.forecast_for(@forecast["response"]["results"][0]['zmw'])['forecast']['txt_forecast']['forecastday'][0] %>
+          <%= image_tag(city['icon_url']) %>
+          <%= city['fcttext'] %>
+      <% end %>
+    </p>
+
+    <p>
+      <b>List of attached Events:</b><br>
+      <% @plan.events.each do |event| %>
+          <%= link_to Eventful.get_event(event)['title'], '/events/' + Event.find_by_api_id(event).id.to_s %>
+          <%= link_to 'Destroy', '/plans/remove_event?id=' + @plan.id.to_s + '&event_id=' + event %>
+          <br>
+      <% end %>
+    </p>
+  </table>
+  <%= link_to 'Search for events to add', '/search/results?q=' + @plan.city.to_s %>
+  <br>
+  <%= link_to 'Download PDF', plan_path(@plan, :format => 'pdf') %>
+</div>
+
+<div class='well'>
+  Compartir itinerario por email<br><br>
+  <form action="<%= @plan.id.to_s %>" method="get">
+    <input type="text" id="email" name="email">
+    <button class="btn" type="submit">Enviar</button>
+  </form>
+</div>
+
+<script type="text/javascript">
+
+  var data = {
+      "timeline":
+      {
+          "headline":"<%= @plan.name %>",
+          "type":"default",
+          "text":"<p><%= @plan.description %></p>",
+          "date": [
+              <% @plan.events.each do |event| %>
+              {
+                  "startDate":"<%= Eventful.get_event(event)['start_time'] %>",
+                  "endDate":"<%= Eventful.get_event(event)['stop_time'] %>",
+                  "headline":"<%= Eventful.get_event(event)['title'] %>",
+                  "text":"Prueba"
+              },
+              <% end %>
+          ]
+      }
+  };
+
+    createStoryJS({
+        width:      '100%',
+        height:     '600',
+        css: '/assets/stylesheets/timeline.css',
+        source: data,
+        js: '/assets/javascripts/timeline.js',
+        embed_id:   'timeline-embed'
+    });
+</script>

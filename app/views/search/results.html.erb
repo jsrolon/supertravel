@@ -1,0 +1,82 @@
+<% require 'wikipedia' %>
+<% page = Wikipedia.find( params[:q])%>
+
+
+<h1>Visit <%= page.title%></h1>
+<br>
+<center><h3>Look Images of the City, we wait that you have fun¡¡</h3></center>
+<br>
+<% pages=page.image_urls %>
+
+<div class="row-fluid">
+  <div class="span4">
+    <h3>Filter results by:</h3>
+    <form action="/search/results" method="get">
+      <input type="hidden" value="<%= params['q'] %>" name="q" id="q">
+      <input type="text" id="category" name="category" placeholder="Category"><br>
+      <input type="text" id="keywords" name="keywords" placeholder="Keyword"> <br>
+      <button class="btn" type="submit">Filter</button>
+    </form>
+  </div>
+  <div class="span8">
+    <% a=0 %>
+    <% @res.each do |event| %>
+
+        <div class="media">
+          <div class="media-body">
+            <h4 class="media-heading">
+
+              <div class="btn-group">
+                <% class_text = "btn btn-mini dropdown-toggle" %>
+                <% if not user_signed_in? %>
+                    <% class_text += " disabled" %>
+                <% end %>
+                <a class="<%= class_text %>" data-toggle="dropdown" href="#">
+                  Add to
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <% if user_signed_in? %>
+                      <% current_user.plans.each do |plan| %>
+                          <% if plan.city.eql?(params[:q]) %>
+                          <li><%= link_to plan.name, '/plans/add_event?id=' + plan.id.to_s + '&event_id=' + event['id'], method: :get %></li>
+                          <% end %>
+                      <% end %>
+                  <% end %>
+                </ul>
+              </div>
+
+              <% event_in_db = Event.find_by_api_id(event['id']) %>
+              <% if event_in_db.nil? %>
+                  <%= truncate(event['title'], :length => 55, :separator => ' ') %>
+              <% else %>
+                  <%= link_to truncate(event['title'], :length => 55, :separator => ' '), '/events/' + event_in_db.id.to_s, :method => :get %>
+              <% end %>
+
+            </h4>
+            <h5 class="text-info">from <%= event['start_time'] %></h5>
+
+            <% if event['description'].nil? %>
+                Sorry, we couldn't find a description for this event.
+            <% else %>
+                <%= truncate(event['description'], :length => 300, :separator => ' ').html_safe %>
+            <% end %>
+            <br>
+            <br>
+            <center><%= image_tag(pages[a], :alt => "Image "+params[:q], :size => "512x512") %></center>
+            <br>
+            <center>
+            <% if a<pages.size-1 %>
+                  <% a=a+1 %>
+            <% else %>
+                  <% a=0 %>
+            <% end %>
+              <br>
+            </center>
+            </center>
+          </div>
+        </div>
+    <% end %>
+
+  </div>
+</div>

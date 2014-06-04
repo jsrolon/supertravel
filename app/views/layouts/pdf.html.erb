@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+<h1><%= @plan.name %></h1>
+
+<div class="well">
+  <table width="80%">
+    <tr>
+      <td align="left">
+        <b>Starts on: </b><%= @plan.starts_on %>
+      </td>
+      <td align="right">
+        <b>Ends on: </b><%= @plan.ends_on %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <p>
+          <b>Description:</b>
+          <%= @plan.description %>
+        </p>
+      </td>
+    </tr>
+  </table>
+    You have <%= @plan.events.size %> events
+    <% if @plan.events.size != 0 %>
+    <p>
+      <b>List of attached Events:</b>
+    <ul>
+      <% @plan.events.each do |event| %>
+          <li><%= Eventful.get_event(event)['title'] %></li>
+          <br>
+      <% end %>
+    </ul>
+    </p>
+    <% else %>
+        <p>
+          <b>Without Events</b>
+        </p>
+    <% end %>
+</div>

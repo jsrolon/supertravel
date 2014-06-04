@@ -1,0 +1,47 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner ">
+    <div class="container-fluid">
+      <div class="nav-collapse collapse">
+
+      <% if user_signed_in? %>
+      <ul class="nav pull-right">
+        <li><%= link_to 'Directory', '/contacts', :method => :get %></li>
+        <li><%= link_to 'To-Do List', '/tasks', :method => :get %></li>
+        <li><%= link_to 'Plans', '/plans', :method => :get %></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <%= current_user.email %>
+          <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><%= link_to 'My Account', '/users/edit', :method => :get %></li>
+            <li class="divider"></li>
+            <li><%= link_to 'Sign Out', destroy_user_session_path, :method => :delete %></li>
+          </ul>
+        </li>
+      </ul>
+      <% else %>
+      <ul class="nav pull-right">
+          <li>
+            <form action="/users/sign_in">
+              <button class="btn btn-info" type="submit">Sign In</button>
+            </form>
+          </li>
+        </ul>
+        <ul class="nav pull-right">
+          <li><%= link_to 'Sign Up', '/users/sign_up', :method => :get %></li>
+        </ul>
+      <% end %>
+
+        <ul class="nav pull-left">
+          <form class="navbar-search pull-left" action="/search/results" method="get">
+            <input autocomplete="off" id="q" name="q" type="text" class="search-query" placeholder="Search places and events">
+          </form>
+        </ul>
+
+        <a class="brand" href="/"><%= image_tag 'logo.png', alt: 'logo' %></a>
+
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+</div>

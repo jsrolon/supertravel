@@ -1,0 +1,61 @@
+<div class="row map-row" id="map"><br></div>
+
+<div class="row" id="thediv">
+  <table class="table table-striped">
+    <tr>
+      <!--    <th>User</th> -->
+      <th>Name</th>
+      <th>Description</th>
+      <th>Starts on</th>
+      <th>Ends on</th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% @plans.each do |plan| %>
+        <tr onmouseover="geocoder.query('<%= plan.city %>', showOnMap);">
+          <td><%= link_to plan.name, 'plans/' + plan.id.to_s %></td>
+          <td><%= plan.description %></td>
+          <td><%= plan.starts_on %></td>
+          <td><%= plan.ends_on %></td>
+          <td><%= link_to 'Edit', edit_plan_path(plan) %></td>
+          <td><%= link_to 'Destroy', plan, confirm: 'Are you sure?', method: :delete %></td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+
+<br>
+
+<script>
+    var map = L.mapbox.map('map', 'jsrolon554.map-u7uovq21',  {
+        center: [51.505, -0.09],
+        zoom: 4
+    });
+    var geocoder = L.mapbox.geocoder('jsrolon554.map-u7uovq21');
+
+    <% @plans.each do |plan| %>
+    geocoder.query('<%= plan.city %>', addMarker);
+    <% end %>
+
+    function addMarker(err, data) {
+        L.mapbox.markerLayer({
+            // this feature is in the GeoJSON format: see geojson.org
+            // for the full specification
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                // coordinates here are in longitude, latitude order because
+                // x, y is the standard for GeoJSON and many formats
+                coordinates: data.latlng.reverse()
+            }
+        }).addTo(map);
+    };
+
+    function showOnMap(err, data) {
+        map.setView(data.latlng, 4);
+    };
+</script>
+
+
+<%= link_to 'New Plan', new_plan_path %>

@@ -1,0 +1,31 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require datepicker
+ *= require_self
+ *= require_tree .
+*/
+
+/* styles for printing */
+@media print {
+    /* hide blocks that should not appear in print/pdf */
+    #header, .menu, #footer,  {
+        display: none;
+    }
+
+    /* make the content block the entire width since the menu is not visible */
+    #content, #content-board
+    {
+        top: 0;
+        margin: 0;
+        padding: 10px;
+        width: 100%;
+    }
+}
